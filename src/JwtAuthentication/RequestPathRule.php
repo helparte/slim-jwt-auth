@@ -1,7 +1,6 @@
 <?php
 
 declare(strict_types=1);
-// Edited!!!!
 /*
 
 Copyright (c) 2015-2019 Mika Tuupola
@@ -61,10 +60,12 @@ final class RequestPathRule implements RuleInterface
         $uri = preg_replace("#/+#", "/", $uri);
 
         /* If request path is matches ignore should not authenticate. */
-        foreach ((array)$this->options["ignore"] as $ignore) {
-            $ignore = rtrim($ignore, "/");
-            if (!!preg_match("@^{$ignore}(/.*)?$@", $uri)) {
-                return false;
+        foreach ((array)$this->options["ignore"] as $key => $value) {
+            $ignore = rtrim($key, "/");
+            if (!!preg_match("@^{$key}(/.*)?$@", $uri)) {
+                if (in_array($request->getMethod(), $value)){
+                    return false;
+                }
             }
         }
 
@@ -75,6 +76,7 @@ final class RequestPathRule implements RuleInterface
                 return true;
             }
         }
+        
         return false;
     }
 }
