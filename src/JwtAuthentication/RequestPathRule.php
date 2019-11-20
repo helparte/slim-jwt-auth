@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-
+// Edited!
 /*
 
 Copyright (c) 2015-2019 Mika Tuupola
