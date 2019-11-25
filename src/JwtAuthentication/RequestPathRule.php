@@ -60,23 +60,46 @@ final class RequestPathRule implements RuleInterface
         $uri = preg_replace("#/+#", "/", $uri);
 
         /* If request path is matches ignore should not authenticate. */
-        foreach ((array)$this->options["ignore"] as $key => $value) {
-            $ignore = rtrim($key, "/");
-            if (!!preg_match("@^{$key}(/.*)?$@", $uri)) {
-                if (in_array($request->getMethod(), $value)){
-                    return false;
-                }
+        // foreach ((array)$this->options["ignore"] as $key => $value) {
+        //     $ignore = rtrim($key, "/");
+        //     if (!!preg_match("@^{$key}(/.*)?$@", $uri)) {
+        //         if (in_array($request->getMethod(), $value)){
+        //             return false;
+        //         }
+        //     }
+        // }
+
+        $guestRoutes = $this->options["ignore"];
+
+        $args = null;
+        $route = $request->getAttribute('route');
+        if (isset($route)) {
+            $args = $route->getArguments();
+        }
+
+        $path = $request->getUri()->getPath();
+        if (isset($args)) {
+            if (count($args) > 0) {
+                $path = str_replace("/" . implode("/", $args), '', $path);
+            }
+        }
+        if (substr($path, 0, 1) != '/')
+            $path = '/' . $path;
+
+        if (array_key_exists($path, $guestRoutes)) {
+            if (in_array($request->getMethod(), $guestRoutes[$path])) {
+                return false;
             }
         }
 
         /* Otherwise check if path matches and we should authenticate. */
-        foreach ((array)$this->options["path"] as $path) {
+        foreach ((array) $this->options["path"] as $path) {
             $path = rtrim($path, "/");
             if (!!preg_match("@^{$path}(/.*)?$@", $uri)) {
                 return true;
             }
         }
-        
+
         return false;
     }
 }
