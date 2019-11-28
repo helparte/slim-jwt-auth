@@ -85,7 +85,12 @@ final class RequestPathRule implements RuleInterface
         }
         if (substr($path, 0, 1) != '/')
             $path = '/' . $path;
+        
+        // Allow OPTIONS by default
+        if ($request->getMethod() == 'OPTIONS')
+            return false;
 
+        // Check if request and method is ignored
         if (array_key_exists($path, $guestRoutes)) {
             if (in_array($request->getMethod(), $guestRoutes[$path])) {
                 return false;
