@@ -261,7 +261,7 @@ final class JwtAuthentication implements MiddlewareInterface
         };
 
         /* If everything fails log and throw. */
-        $this->log(LogLevel::WARNING, "Token not found", ['request' => (array) $request]);
+        $this->log(LogLevel::WARNING, "Token not found");
         throw new RuntimeException("Token not found.");
     }
 
