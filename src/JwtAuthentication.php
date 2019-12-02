@@ -142,7 +142,7 @@ final class JwtAuthentication implements MiddlewareInterface
             $response = (new ResponseFactory)->createResponse(401);
             return $this->processError($response, [
                 "message" => $exception->getMessage(),
-                "uri" => (string)$request->getUri()
+                "uri" => (string) $request->getUri()
             ]);
         }
 
@@ -261,7 +261,7 @@ final class JwtAuthentication implements MiddlewareInterface
         };
 
         /* If everything fails log and throw. */
-        $this->log(LogLevel::WARNING, "Token not found");
+        $this->log(LogLevel::WARNING, "Token not found", ['request' => (array) $request]);
         throw new RuntimeException("Token not found.");
     }
 
@@ -348,7 +348,7 @@ final class JwtAuthentication implements MiddlewareInterface
      */
     private function secret($secret): void
     {
-        if (false === is_array($secret) && false === is_string($secret) && ! $secret instanceof \ArrayAccess) {
+        if (false === is_array($secret) && false === is_string($secret) && !$secret instanceof \ArrayAccess) {
             throw new InvalidArgumentException(
                 'Secret must be either a string or an array of "kid" => "secret" pairs'
             );
